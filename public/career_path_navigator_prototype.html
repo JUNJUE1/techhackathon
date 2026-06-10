@@ -1,0 +1,354 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.nav-logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.nav-logo i{font-size:20px;color:#534AB7}
+.nav-tabs{display:flex;gap:4px}
+.tab{padding:6px 14px;border-radius:var(--border-radius-md);font-size:13px;border:0.5px solid transparent;cursor:pointer;color:var(--color-text-secondary);background:transparent}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-tertiary)}
+.main{display:grid;grid-template-columns:300px 1fr;height:calc(100vh - 53px);min-height:600px}
+.sidebar{border-right:0.5px solid var(--color-border-tertiary);padding:20px;overflow-y:auto;background:var(--color-background-primary)}
+.sidebar h2{font-size:14px;font-weight:500;color:var(--color-text-secondary);margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em}
+.result-input{width:100%;padding:8px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary);margin-bottom:16px}
+.subject-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.subject-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;border:0.5px solid var(--color-border-tertiary)}
+.subject-card label{font-size:11px;color:var(--color-text-secondary);display:block;margin-bottom:4px}
+.subject-card select{width:100%;font-size:12px;border:none;background:transparent;color:var(--color-text-primary)}
+.grade-A{color:#0F6E56;font-weight:500}
+.grade-B{color:#185FA5;font-weight:500}
+.grade-C{color:#533AB7;font-weight:500}
+.btn-primary{width:100%;padding:9px;border-radius:var(--border-radius-md);background:#534AB7;color:#fff;font-size:13px;font-weight:500;border:none;cursor:pointer;margin-bottom:8px}
+.btn-secondary{width:100%;padding:9px;border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-primary);font-size:13px;border:0.5px solid var(--color-border-secondary);cursor:pointer}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:16px 0}
+.search-career{position:relative;margin-bottom:12px}
+.search-career input{width:100%;padding:8px 12px 8px 32px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary)}
+.search-career i{position:absolute;left:10px;top:9px;font-size:15px;color:var(--color-text-secondary)}
+.career-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:4px 10px;border-radius:20px;font-size:12px;border:0.5px solid var(--color-border-secondary);cursor:pointer;color:var(--color-text-secondary);background:var(--color-background-primary)}
+.chip.active{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+.canvas-area{background:var(--color-background-tertiary);position:relative;overflow:hidden}
+.canvas-header{padding:16px 20px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);display:flex;align-items:center;justify-content:space-between}
+.canvas-header h1{font-size:15px;font-weight:500}
+.canvas-controls{display:flex;gap:6px}
+.icon-btn{width:32px;height:32px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);font-size:16px}
+.tree-container{padding:24px;overflow:auto;height:calc(100% - 57px)}
+.tree{display:flex;flex-direction:column;gap:0;min-width:700px}
+.tree-level{display:flex;align-items:flex-start;gap:0;position:relative}
+.tree-level-label{font-size:11px;color:var(--color-text-secondary);width:80px;padding-top:18px;flex-shrink:0;text-align:right;padding-right:12px}
+.tree-nodes{display:flex;gap:12px;flex:1;flex-wrap:wrap}
+.connector-col{display:flex;flex-direction:column;align-items:center;width:40px;flex-shrink:0}
+.v-line{width:1px;background:var(--color-border-secondary);flex:1;min-height:24px}
+.h-connector{width:100%;height:1px;background:var(--color-border-secondary)}
+.node{border-radius:var(--border-radius-md);padding:10px 14px;border:0.5px solid;cursor:pointer;min-width:120px;max-width:160px;position:relative}
+.node:hover{filter:brightness(0.97)}
+.node-title{font-size:12px;font-weight:500;margin-bottom:2px}
+.node-sub{font-size:11px;opacity:.75}
+.node-badge{position:absolute;top:-6px;right:8px;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:500}
+.node-purple{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+.node-purple .node-badge{background:#534AB7;color:#fff}
+.node-teal{background:#E1F5EE;border-color:#5DCAA5;color:#085041}
+.node-teal .node-badge{background:#0F6E56;color:#fff}
+.node-blue{background:#E6F1FB;border-color:#85B7EB;color:#0C447C}
+.node-blue .node-badge{background:#185FA5;color:#fff}
+.node-amber{background:#FAEEDA;border-color:#FAC775;color:#633806}
+.node-amber .node-badge{background:#854F0B;color:#fff}
+.node-coral{background:#FAECE7;border-color:#F0997B;color:#4A1B0C}
+.node-coral .node-badge{background:#993C1D;color:#fff}
+.node-gray{background:var(--color-background-secondary);border-color:var(--color-border-secondary);color:var(--color-text-primary)}
+.between-levels{display:flex;padding-left:92px;gap:12px;margin:6px 0}
+.between-levels .v-line{width:1px;height:20px;background:var(--color-border-secondary);flex-shrink:0}
+.legend{display:flex;gap:12px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-text-secondary)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+.rec-panel{background:var(--color-background-primary);border-top:0.5px solid var(--color-border-tertiary);padding:14px 20px}
+.rec-panel h3{font-size:13px;font-weight:500;margin-bottom:10px;color:var(--color-text-secondary)}
+.rec-cards{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.rec-card{min-width:180px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;border:0.5px solid var(--color-border-tertiary);flex-shrink:0}
+.rec-card-title{font-size:12px;font-weight:500;margin-bottom:2px}
+.rec-card-sub{font-size:11px;color:var(--color-text-secondary)}
+.rec-match{font-size:10px;margin-top:6px;padding:2px 6px;border-radius:10px;display:inline-block;background:#E1F5EE;color:#085041}
+.tooltip{display:none;position:absolute;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px 12px;font-size:12px;z-index:10;min-width:180px;box-shadow:none;pointer-events:none}
+.node:hover .tooltip{display:block;bottom:calc(100% + 6px);left:0}
+</style>
+
+<h2 class="sr-only">Career Path Navigator — prototype UI showing SPM results input, interactive pathway tree, and personalized career recommendations</h2>
+
+<nav class="nav">
+  <div class="nav-logo"><i class="ti ti-route" aria-hidden="true"></i> Career Path Navigator</div>
+  <div class="nav-tabs">
+    <div class="tab active">Forward planner</div>
+    <div class="tab">Reverse navigator</div>
+    <div class="tab">Compare routes</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="width:28px;height:28px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#3C3489">AM</div>
+  </div>
+</nav>
+
+<div class="main">
+  <aside class="sidebar">
+    <h2>Your SPM results</h2>
+    <input class="result-input" type="text" placeholder="Student name / IC number" value="Ahmad Mirza">
+    <div class="subject-grid">
+      <div class="subject-card">
+        <label>Bahasa Malaysia</label>
+        <select><option class="grade-A">A+</option><option>A</option><option>B+</option></select>
+      </div>
+      <div class="subject-card">
+        <label>English</label>
+        <select><option class="grade-A">A+</option><option>A</option><option>B+</option></select>
+      </div>
+      <div class="subject-card">
+        <label>Mathematics</label>
+        <select><option class="grade-A">A+</option><option>A</option><option>B+</option></select>
+      </div>
+      <div class="subject-card">
+        <label>Add. Mathematics</label>
+        <select><option class="grade-A">A</option><option>A+</option><option>B+</option></select>
+      </div>
+      <div class="subject-card">
+        <label>Physics</label>
+        <select><option class="grade-B">B+</option><option>A+</option><option>A</option></select>
+      </div>
+      <div class="subject-card">
+        <label>Chemistry</label>
+        <select><option class="grade-A">A</option><option>A+</option><option>B+</option></select>
+      </div>
+      <div class="subject-card">
+        <label>Biology</label>
+        <select><option class="grade-B">B+</option><option>A+</option><option>A</option></select>
+      </div>
+      <div class="subject-card">
+        <label>Sejarah</label>
+        <select><option class="grade-A">A+</option><option>A</option><option>B+</option></select>
+      </div>
+    </div>
+    <button class="btn-primary"><i class="ti ti-sparkles" aria-hidden="true"></i> Generate pathway</button>
+    <button class="btn-secondary">Clear results</button>
+
+    <hr class="divider">
+
+    <h2>Reverse navigator</h2>
+    <div class="search-career">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" placeholder="Search target career..." value="Software Engineer">
+    </div>
+    <div class="career-chips">
+      <div class="chip active">Software engineer</div>
+      <div class="chip">Doctor</div>
+      <div class="chip">Lawyer</div>
+      <div class="chip">Architect</div>
+      <div class="chip">Data scientist</div>
+      <div class="chip">Accountant</div>
+    </div>
+
+    <hr class="divider">
+
+    <h2>Filter pathways</h2>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <label style="font-size:12px;display:flex;align-items:center;gap:6px;color:var(--color-text-secondary);cursor:pointer"><input type="checkbox" checked> Public universities (IPTA)</label>
+      <label style="font-size:12px;display:flex;align-items:center;gap:6px;color:var(--color-text-secondary);cursor:pointer"><input type="checkbox" checked> Private universities (IPTS)</label>
+      <label style="font-size:12px;display:flex;align-items:center;gap:6px;color:var(--color-text-secondary);cursor:pointer"><input type="checkbox"> Polytechnics / community colleges</label>
+      <label style="font-size:12px;display:flex;align-items:center;gap:6px;color:var(--color-text-secondary);cursor:pointer"><input type="checkbox"> Overseas institutions</label>
+      <label style="font-size:12px;display:flex;align-items:center;gap:6px;color:var(--color-text-secondary);cursor:pointer"><input type="checkbox"> Scholarship available</label>
+    </div>
+  </aside>
+
+  <main class="canvas-area" style="display:flex;flex-direction:column">
+    <div class="canvas-header">
+      <div>
+        <h1>Pathway tree — Ahmad Mirza</h1>
+        <div class="legend" style="margin-top:6px">
+          <div class="legend-item"><div class="legend-dot" style="background:#534AB7"></div> Pre-university</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div> Degree</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#185FA5"></div> Postgrad</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#D85A30"></div> Career</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#888780"></div> Alternative</div>
+        </div>
+      </div>
+      <div class="canvas-controls">
+        <div class="icon-btn" title="Zoom in"><i class="ti ti-zoom-in" aria-hidden="true"></i></div>
+        <div class="icon-btn" title="Zoom out"><i class="ti ti-zoom-out" aria-hidden="true"></i></div>
+        <div class="icon-btn" title="Reset view"><i class="ti ti-focus-centered" aria-hidden="true"></i></div>
+        <div class="icon-btn" title="Export"><i class="ti ti-download" aria-hidden="true"></i></div>
+      </div>
+    </div>
+
+    <div class="tree-container">
+      <div class="tree">
+
+        <div class="tree-level">
+          <div class="tree-level-label">Current</div>
+          <div class="tree-nodes">
+            <div class="node node-gray" style="background:var(--color-background-primary);border:2px solid #534AB7">
+              <div class="node-title" style="color:#3C3489">SPM 2024</div>
+              <div class="node-sub" style="color:#534AB7">8A 1B+ · Sains Tulen</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="between-levels">
+          <div style="margin-left:60px;display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+        </div>
+
+        <div class="tree-level">
+          <div class="tree-level-label">Pre-U</div>
+          <div class="tree-nodes">
+            <div class="node node-purple" style="position:relative">
+              <div class="node-badge">Recommended</div>
+              <div class="node-title">STPM / Matrikulasi</div>
+              <div class="node-sub">1.5–2 years · IPTA pathway</div>
+              <div class="tooltip">
+                <div style="font-weight:500;margin-bottom:4px">STPM / Matrikulasi</div>
+                <div style="color:var(--color-text-secondary)">Main gateway to public universities. Qualifies for JPA, MARA scholarships.</div>
+              </div>
+            </div>
+            <div class="node node-purple">
+              <div class="node-title">A-Levels</div>
+              <div class="node-sub">1.5–2 years · Private / overseas</div>
+            </div>
+            <div class="node node-purple">
+              <div class="node-title">Foundation</div>
+              <div class="node-sub">1 year · IPTS pathway</div>
+            </div>
+            <div class="node node-purple">
+              <div class="node-title">Diploma</div>
+              <div class="node-sub">2–3 years · Direct entry</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="between-levels" style="padding-left:92px">
+          <div style="display:flex;gap:48px">
+            <div style="display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+          </div>
+        </div>
+
+        <div class="tree-level">
+          <div class="tree-level-label">Degree</div>
+          <div class="tree-nodes">
+            <div class="node node-teal" style="position:relative">
+              <div class="node-badge">High match</div>
+              <div class="node-title">Computer Science</div>
+              <div class="node-sub">3–4 years · UM, UTM, UPM</div>
+              <div class="tooltip">
+                <div style="font-weight:500;margin-bottom:4px">B.Sc. Computer Science</div>
+                <div style="color:var(--color-text-secondary)">Strong match based on Maths A+ and Add Maths A. High employability in tech sector.</div>
+              </div>
+            </div>
+            <div class="node node-teal" style="position:relative">
+              <div class="node-badge">High match</div>
+              <div class="node-title">Engineering</div>
+              <div class="node-sub">4 years · UTM, UTP, UiTM</div>
+            </div>
+            <div class="node node-teal">
+              <div class="node-title">Medicine (MBBS)</div>
+              <div class="node-sub">5 years · UM, UKM, IMU</div>
+            </div>
+            <div class="node node-teal">
+              <div class="node-title">Data Science</div>
+              <div class="node-sub">3 years · UTM, UPSI</div>
+            </div>
+            <div class="node node-gray">
+              <div class="node-title">Accounting / Finance</div>
+              <div class="node-sub">3 years · Various IPTS</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="between-levels" style="padding-left:92px">
+          <div style="display:flex;gap:48px">
+            <div style="display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+          </div>
+        </div>
+
+        <div class="tree-level">
+          <div class="tree-level-label">Postgrad</div>
+          <div class="tree-nodes">
+            <div class="node node-blue">
+              <div class="node-title">M.Sc. / MBA</div>
+              <div class="node-sub">1–2 years · Optional</div>
+            </div>
+            <div class="node node-blue">
+              <div class="node-title">Ph.D. / Research</div>
+              <div class="node-sub">3–5 years · Academic / R&D</div>
+            </div>
+            <div class="node node-gray">
+              <div class="node-title">Professional certs</div>
+              <div class="node-sub">AWS, PMP, CPA, etc.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="between-levels" style="padding-left:92px">
+          <div style="display:flex;gap:48px">
+            <div style="display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center"><div class="v-line" style="height:20px"></div></div>
+          </div>
+        </div>
+
+        <div class="tree-level">
+          <div class="tree-level-label">Career</div>
+          <div class="tree-nodes">
+            <div class="node node-coral" style="position:relative">
+              <div class="node-badge">Top pick</div>
+              <div class="node-title">Software engineer</div>
+              <div class="node-sub">RM 4k–12k/mo · High demand</div>
+            </div>
+            <div class="node node-coral">
+              <div class="node-title">Data scientist</div>
+              <div class="node-sub">RM 5k–15k/mo · Growing</div>
+            </div>
+            <div class="node node-coral">
+              <div class="node-title">Medical officer</div>
+              <div class="node-sub">RM 4k–8k/mo · Stable</div>
+            </div>
+            <div class="node node-gray">
+              <div class="node-title">Civil engineer</div>
+              <div class="node-sub">RM 3k–9k/mo</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="rec-panel">
+      <h3><i class="ti ti-sparkles" aria-hidden="true" style="font-size:14px;margin-right:4px"></i>Personalised recommendations based on your results</h3>
+      <div class="rec-cards">
+        <div class="rec-card">
+          <div class="rec-card-title">Computer Science @ UM</div>
+          <div class="rec-card-sub">Via Matrikulasi → B.Sc.</div>
+          <div class="rec-match">95% match</div>
+        </div>
+        <div class="rec-card">
+          <div class="rec-card-title">Electrical Eng @ UTM</div>
+          <div class="rec-card-sub">Via STPM → B.Eng.</div>
+          <div class="rec-match">88% match</div>
+        </div>
+        <div class="rec-card">
+          <div class="rec-card-title">Data Science @ UTM</div>
+          <div class="rec-card-sub">Via Foundation → B.Sc.</div>
+          <div class="rec-match">84% match</div>
+        </div>
+        <div class="rec-card">
+          <div class="rec-card-title">Medicine @ IMU</div>
+          <div class="rec-card-sub">Via A-Levels → MBBS</div>
+          <div class="rec-match">79% match</div>
+        </div>
+        <div class="rec-card">
+          <div class="rec-card-title">Software Dev diploma</div>
+          <div class="rec-card-sub">Politeknik → fast entry</div>
+          <div class="rec-match">72% match</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
